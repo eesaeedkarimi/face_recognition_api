@@ -14,7 +14,7 @@ import numpy as np
 from config import ENROLLED_EMBEDDING_ADDRESS, MAX_IMAGE_SCALE
 
 
-class FaceIdentification:
+class FaceRecognition:
     def __init__(self):
         # Initializing face detection and face recognition models
         self.model = insightface.app.FaceAnalysis(det_name='retinaface_mnet025_v2',

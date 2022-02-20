@@ -9,7 +9,7 @@ from flask_restful import Resource, Api
 import utils
 # Packages
 from config import BASE_ADDRESS
-from face_identification import FaceIdentification
+from face_recognition import FaceRecognition
 from log import logger
 
 # Initializing the flask API
@@ -20,7 +20,7 @@ api = Api(app)
 logger = logger()
 
 # Initializing Face Identification Object
-face_identification = FaceIdentification()
+face_recognition = FaceRecognition()
 
 
 # Initializing API
@@ -32,7 +32,7 @@ def api_init():
     pass
 
 
-# Creating FaceIdentification API
+# Creating FaceRecognition API
 class FaceIdentification(Resource):
 
     # Initializing default self.results
@@ -103,7 +103,7 @@ class FaceIdentification(Resource):
         # Face identification
         logger.debug(f'ID: {self.request_id} - Face identification started')
         try:
-            self.results = face_identification.face_identifier(self.frame_str, self.rotation, self.results)
+            self.results = face_recognition.face_identifier(self.frame_str, self.rotation, self.results)
         except RuntimeError:
             return utils.prepare_the_error_message(logger_model=logger,
                                                    results=self.results,
@@ -244,8 +244,8 @@ class FaceEnrollment(Resource):
         #
         logger.debug(f'ID: {self.request_id} - Face enrollment started')
         try:
-            self.results = face_identification.face_enroller(self.frame_str, self.user_id, self.user_name,
-                                                             self.rotation, self.results)
+            self.results = face_recognition.face_enroller(self.frame_str, self.user_id, self.user_name,
+                                                          self.rotation, self.results)
             if self.results['id_is_duplicated']:
                 if self.results['identified_id'] > 0:
                     return utils.prepare_the_error_message(
@@ -352,7 +352,7 @@ class HealthCheck(Resource):
 
 
 # Adding the resources to the Face Identification API
-api.add_resource(FaceIdentification, '/face_recognition/face_identification')
+api.add_resource(FaceIdentification, '/face_recognition/face_recognition')
 api.add_resource(FaceEnrollment, '/face_recognition/face_enrollment')
 api.add_resource(HealthCheck, '/face_recognition/health_check')
 
