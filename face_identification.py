@@ -1,5 +1,5 @@
 """
-This class contains all the requirements for face identification task.
+This class contains all the requirements for face recognition tasks.
 These requirements include main model and related functions.
 """
 import json
@@ -29,7 +29,6 @@ class FaceIdentification:
         self.face_verification_threshold = self._score_normalizer(0.36042076)
 
         # Load enrolled templates
-        # TODO
         self.enrolled_embeddings_path = ENROLLED_EMBEDDING_ADDRESS
         self._enrolled_embeddings_loader()
 
@@ -37,6 +36,11 @@ class FaceIdentification:
     def _score_normalizer(similarity_score):
         """
         Computing normalized score based on input number.
+        Maps cosine similarity to a number between 0 and 100.
+        The normalizer is a function to regress:
+        the cumulative histogram of similarity of mates for the outputs of more than 50 and
+        the negative of cumulative histogram of similarity of non-mates for the outputs of less than 50.
+        Histograms are extracted from LFW dataset.
 
         Parameters
         ----------
@@ -77,19 +81,42 @@ class FaceIdentification:
 
     # Load enrolled embeddings
     def _enrolled_embeddings_loader(self):
+        """
+        Loads enrolled embeddings from a json file.
+        """
+
         enrolled_embeddings_file = os.path.join(self.enrolled_embeddings_path, 'enrolled_embeddings.json')
         if os.path.exists(enrolled_embeddings_file):
             with open(enrolled_embeddings_file, 'r') as f:
                 self.enrolled_embeddings = json.load(f)
         else:
+            # TODO make directory & an empty json file
             self.enrolled_embeddings = {}
         return
 
     def _enrolled_embeddings_adder(self, embedding, user_id, user_name):
+        """
+        Adds an embedding to the enrolled_embeddings variable.
+
+        Parameters
+        ----------
+        embedding : list
+            The normed feature vector extracted by identification model from the face of the new user.
+        user_id : int
+            The id of the new user.
+        user_name : str
+            The name of the new user
+
+        """
+
         self.enrolled_embeddings[user_id] = {'name': user_name, 'embedding': embedding}
         return
 
     def _enrolled_embeddings_saver(self):
+        """
+        Save enrolled embeddings to the json file.
+        """
+
         with open(os.path.join(self.enrolled_embeddings_path, 'enrolled_embeddings.json'), 'w') as f:
             json.dump(self.enrolled_embeddings, f)
         return
@@ -161,13 +188,13 @@ class FaceIdentification:
 
         Parameters
         ----------
-        img_str : object
+        img_str : str
             Input image as bytes stream
 
         Returns
         -------
         object
-            Converted image string into cv2 image as a ndarray
+            Converted image string into cv2 image as ndarray
         """
 
         np_img = np.fromstring(img_str, np.uint8)
@@ -183,7 +210,7 @@ class FaceIdentification:
 
         Parameters
         ----------
-        frame_str : object
+        frame_str : str
             Input frame as bytes stream
         rotation : int
             rotation of frames (0: no rotation, 1: 90 degrees, 2: 180 degrees, 3: 270 degrees)
@@ -227,7 +254,8 @@ class FaceIdentification:
             enrolled_ids = list(self.enrolled_embeddings.keys())
             for enrolled_id in enrolled_ids:
                 sim = int(self._score_normalizer(
-                    np.dot(probe_normed_embedding, self.enrolled_embeddings[enrolled_id]['embedding'])))
+                    np.dot(probe_normed_embedding, self.enrolled_embeddings[enrolled_id]['embedding']).item()
+                ))
                 face_similarities.append(sim)
             face_similarities = np.array(face_similarities)
             results['times']['Face_identification'] = round(time.time() - start_time, 2)
@@ -260,8 +288,12 @@ class FaceIdentification:
 
         Parameters
         ----------
-        frame_str : object
+        frame_str : str
             Input frame as bytes stream
+        user_id : int
+            The id of the new user.
+        user_name : str
+            The name of the new user
         rotation : int
             rotation of frames (0: no rotation, 1: 90 degrees, 2: 180 degrees, 3: 270 degrees)
         results : dict
@@ -273,6 +305,7 @@ class FaceIdentification:
             A dictionary of results
         """
 
+        # Return if user_id already exists in enrolled_embeddings
         if str(user_id) in self.enrolled_embeddings.keys():
             results['id_is_duplicated'] = True
             results['identified_id'] = user_id
@@ -280,6 +313,7 @@ class FaceIdentification:
             identified_name = self.enrolled_embeddings[str(user_id)]['name']
             results['error_message'].append(f'The id {user_id} already exists with name: {identified_name}')
             return results
+        # Return if user_name already exists in enrolled_embeddings
         user_names = [value['name'] for value in self.enrolled_embeddings.values()]
         if user_name in user_names:
             results['id_is_duplicated'] = True
@@ -288,6 +322,7 @@ class FaceIdentification:
             identified_id = list(self.enrolled_embeddings.keys())[user_names.index(user_name)]
             results['error_message'].append(f'The name {user_name} already exists with id: {identified_id}')
             return results
+
         # Decoding string image into cv2 image
         try:
             frame = self._image_format_convertor(frame_str)
@@ -315,7 +350,8 @@ class FaceIdentification:
             enrolled_ids = list(self.enrolled_embeddings.keys())
             for enrolled_id in enrolled_ids:
                 sim = int(self._score_normalizer(
-                    np.dot(probe_normed_embedding, self.enrolled_embeddings[enrolled_id]['embedding'])))
+                    np.dot(probe_normed_embedding, self.enrolled_embeddings[enrolled_id]['embedding']).item()
+                ))
                 face_similarities.append(sim)
             face_similarities = np.array(face_similarities)
         except:
