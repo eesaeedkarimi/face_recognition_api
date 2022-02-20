@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+*.npy
+
+# Pycharm data
+.idea/
+
+# Log file
+*.log
+
+.gitignore.save
+
+# VSCode editor files
+.vscode
+
+# Virtual Environment
+venv
+env
+
+# Environment Variables
+.env
+
+# Enrolled embeddings
+enrolled_embeddings
