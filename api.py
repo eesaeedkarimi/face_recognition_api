@@ -143,7 +143,7 @@ class FaceIdentification(Resource):
                           'face_is_identified: {}, ' \
                           'face_similarity: {}, ' \
                           'identified_id: {}, ' \
-                          'identified_name: {}, ' \
+                          'identified_name: \"{}\", ' \
                           'times: {}'.format(self.request_id,
                                              int(self.results['face_is_detected']),
                                              int(self.results['face_is_identified']),
@@ -307,7 +307,7 @@ class FaceEnrollment(Resource):
                           'face_is_identified: {}, ' \
                           'face_similarity: {}, ' \
                           'identified_id: {}, ' \
-                          'identified_name: {}, ' \
+                          'identified_name: \"{}\", ' \
                           'times: {}'.format(self.request_id,
                                              int(self.results['face_is_detected']),
                                              int(self.results['face_is_identified']),
