@@ -1,9 +1,5 @@
 import datetime
-import os
 import re
-import urllib.request as urllib2
-
-import cv2
 
 
 # Adding time to input string
