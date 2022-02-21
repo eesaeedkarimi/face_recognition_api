@@ -1,0 +1,4 @@
+'~/.insightface/models/retinaface_mnet025_v2'
+
+'~/.insightface/models/arcface_mfn_v1'
+
