@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  face_recognition_api:
+    container_name: face_recognition_api
+    restart: unless-stopped
+    build: .
+    command: gunicorn api:app --worker-class=gevent --worker-connections=1000 --workers=1 -b 0.0.0.0:6000 --timeout 600 --log-level INFO --access-logfile gunicorn-kyc.log
+    volumes:
+      - ./:/app/
+    ports:
+      - "6000:6000"
