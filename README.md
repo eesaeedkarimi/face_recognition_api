@@ -18,6 +18,7 @@ can send your requests to this port to get a response as below:
 If you want to use this api in a production service run the following commands to build a docker-compose:
 
     $ sudo docker-compose build
+    $ sudo docker-compose up -d
 
 
 **Using Face Identification endpoint of API**
