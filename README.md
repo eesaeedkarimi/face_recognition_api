@@ -44,7 +44,7 @@ and "identified_name".
 
 To generate the **json_frames**, please follow the codes:
 
-> cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_2.jpg"))
+> cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_2.jpg"))  
 > frame_str_identification = base64.b64encode(np.array(cv2.imencode(".jpg", cv_frame)[1]).tobytes()).decode("utf8")
 
     POST 127.0.0.1:6000/face_recognition/face_identification HTTP/1.1
@@ -81,8 +81,8 @@ a string that defines the name of user to be enrolled, an id for the request, an
 
 To generate the **json_frames**, please follow the codes:
 
->>> cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_1.jpg"))
->>> frame_str_enrollment = base64.b64encode(np.array(cv2.imencode(".jpg", cv_frame)[1]).tobytes()).decode("utf8")
+> cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_1.jpg"))  
+> frame_str_enrollment = base64.b64encode(np.array(cv2.imencode(".jpg", cv_frame)[1]).tobytes()).decode("utf8")
 
     POST 127.0.0.1:6000/face_recognition/face_enrollment HTTP/1.1
 
