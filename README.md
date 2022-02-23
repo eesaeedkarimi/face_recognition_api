@@ -43,7 +43,7 @@ and "identified_name".
 
 **Example Request for Face Identification**
 
-To generate the **json_frames**, please follow the codes:
+To generate the **base64 encoded frames**, please follow the codes:
 
 > cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_2.jpg"))  
 > frame_str_identification = base64.b64encode(np.array(cv2.imencode(".jpg", cv_frame)[1]).tobytes()).decode("utf8")
@@ -80,7 +80,7 @@ a string that defines the name of user to be enrolled, an id for the request, an
 
 **Example Request for Face Enrollment**
 
-To generate the **json_frames**, please follow the codes:
+To generate the **base64 encoded frames**, please follow the codes:
 
 > cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_1.jpg"))  
 > frame_str_enrollment = base64.b64encode(np.array(cv2.imencode(".jpg", cv_frame)[1]).tobytes()).decode("utf8")
