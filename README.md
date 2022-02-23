@@ -1,7 +1,8 @@
 Overview
 --------
-This is an api for Face Recognition. The module uses InsightFace for detection and recognition of faces. Each endpoint
-of this api is responsible for a task in including Face Recognition, Enrollment of a face in database, Healthcheck, etc.
+This is an api for Face Recognition. The module uses [InsightFace](https://github.com/deepinsight/insightface) for 
+detection and recognition of faces. Each endpoint of this api is responsible for a task in including Face Recognition, 
+Enrollment of a face in database, Healthcheck, etc.
 
 User Guide
 ----------
@@ -43,8 +44,8 @@ and "identified_name".
 
 To generate the **json_frames**, please follow the codes:
 
->>> cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_2.jpg"))
->>> frame_str_identification = base64.b64encode(np.array(cv2.imencode(".jpg", cv_frame)[1]).tobytes()).decode("utf8")
+> cv_frame = cv2.imread(os.path.join(BASE_ADDRESS, "tests/fixtures/hodor_2.jpg"))
+> frame_str_identification = base64.b64encode(np.array(cv2.imencode(".jpg", cv_frame)[1]).tobytes()).decode("utf8")
 
     POST 127.0.0.1:6000/face_recognition/face_identification HTTP/1.1
 

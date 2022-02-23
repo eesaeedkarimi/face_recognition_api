@@ -1,8 +1,9 @@
 """
 Overview
 --------
-This is an api for Face Recognition. The module uses InsightFace for detection and recognition of faces. Each endpoint
-of this api is responsible for a task in including Face Recognition, Enrollment of a face in database, Healthcheck, etc.
+This is an api for Face Recognition. The module uses [InsightFace](https://github.com/deepinsight/insightface) for
+detection and recognition of faces. Each endpoint of this api is responsible for a task in including Face Recognition,
+Enrollment of a face in database, Healthcheck, etc.
 
 User Guide
 ----------
