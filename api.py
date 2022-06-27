@@ -167,6 +167,13 @@ class FaceIdentification(Resource):
         self.rotation = None
         self.results = {'error_message': [],
                         'face_is_detected': False,
+                        'bbox': {
+                            'left': 0,
+                            'top': 0,
+                            'right': 0,
+                            'bottom': 0,
+                        },
+                        'landmark': [],
                         'face_is_identified': False,
                         'face_similarity': 0,
                         'identified_id': -1,
@@ -247,6 +254,8 @@ class FaceIdentification(Resource):
                                     self.results['error_message']]
             output_dict = {
                 'face_is_detected': int(self.results['face_is_detected']),
+                'bbox': self.results['bbox'],
+                'landmark': self.results['landmark'],
                 'face_is_identified': int(self.results['face_is_identified']),
                 'face_similarity': int(self.results['face_similarity']),
                 'identified_id': int(self.results['identified_id']),
@@ -265,12 +274,16 @@ class FaceIdentification(Resource):
         try:
             log_message = 'request_id: {}, ' \
                           'face_is_detected: {}, ' \
+                          'bbox: {}, ' \
+                          'landmark: {}, ' \
                           'face_is_identified: {}, ' \
                           'face_similarity: {}, ' \
                           'identified_id: {}, ' \
                           'identified_name: \"{}\", ' \
                           'times: {}'.format(self.request_id,
                                              int(self.results['face_is_detected']),
+                                             self.results['bbox'],
+                                             self.results['landmark'],
                                              int(self.results['face_is_identified']),
                                              int(self.results['face_similarity']),
                                              int(self.results['identified_id']),
