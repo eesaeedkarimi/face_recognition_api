@@ -143,10 +143,10 @@ class FaceRecognition:
             raise RuntimeError(f'InsightFace error : {sys.exc_info()[0]}: {sys.exc_info()[1]}')
 
         if len(faces) == 0:
-            raise RuntimeError('No face found in the image')
+            raise AssertionError('No face found in the image')
 
         if len(faces) > 1:
-            raise RuntimeError('More than one face found in the image')
+            raise AssertionError('More than one face found in the image')
 
         return faces[0]
 
@@ -250,8 +250,13 @@ class FaceRecognition:
             results['bbox']['bottom'] = bbox[3]
             results['landmark'] = (probe_face.landmark / scale).tolist()
             results['times']['Face_detection'] = round(time.time() - start_time, 2)
-        except:
-            raise RuntimeError(f'Embedding cannot be extracted from Image: {sys.exc_info()[0]}: {sys.exc_info()[1]}')
+        except RuntimeError:
+            results['error_message'].append(
+                f'Embedding cannot be extracted from Image: {sys.exc_info()[0]}: {sys.exc_info()[1]}')
+        except AssertionError:
+            results['error_message'].append(
+                f'{sys.exc_info()[1].args[0]}')
+            return results
 
         # Computing face similarities between this frame's embedding and enrolled embeddings
         try:
