@@ -143,10 +143,10 @@ class FaceRecognition:
             raise RuntimeError(f'InsightFace error : {sys.exc_info()[0]}: {sys.exc_info()[1]}')
 
         if len(faces) == 0:
-            raise RuntimeError('No face found in the image')
+            raise AssertionError('No face found in the image')
 
         if len(faces) > 1:
-            raise RuntimeError('More than one face found in the image')
+            raise AssertionError('More than one face found in the image')
 
         return faces[0]
 
@@ -231,7 +231,7 @@ class FaceRecognition:
 
         # Downscaling cv2 image to default max image scale
         try:
-            frame, _ = self._image_scaler(frame, MAX_IMAGE_SCALE)
+            frame, scale = self._image_scaler(frame, MAX_IMAGE_SCALE)
         except:
             raise RuntimeError(f'Image frame cannot be down scaled: {sys.exc_info()[0]}: {sys.exc_info()[1]}')
 
@@ -243,9 +243,20 @@ class FaceRecognition:
             probe_face = self._face_feature_extractor(frame)
             probe_normed_embedding = probe_face.normed_embedding
             results['face_is_detected'] = True
+            bbox = (probe_face.bbox / scale).tolist()
+            results['bbox']['left'] = bbox[0]
+            results['bbox']['top'] = bbox[1]
+            results['bbox']['right'] = bbox[2]
+            results['bbox']['bottom'] = bbox[3]
+            results['landmark'] = (probe_face.landmark / scale).tolist()
             results['times']['Face_detection'] = round(time.time() - start_time, 2)
-        except:
-            raise RuntimeError(f'Embedding cannot be extracted from Image: {sys.exc_info()[0]}: {sys.exc_info()[1]}')
+        except RuntimeError:
+            results['error_message'].append(
+                f'Embedding cannot be extracted from Image: {sys.exc_info()[0]}: {sys.exc_info()[1]}')
+        except AssertionError:
+            results['error_message'].append(
+                f'{sys.exc_info()[1].args[0]}')
+            return results
 
         # Computing face similarities between this frame's embedding and enrolled embeddings
         try:
